@@ -5,16 +5,14 @@ RANDOM.ORG JSON-RPC API (Release 1) implementation.
 
 This is a Python implementation of the RANDOM.ORG JSON-RPC API (R1). It provides either serialized or unserialized access to both the signed and unsigned methods of the API through the RandomOrgClient class. It also provides a convenience class through the RandomOrgClient class, the RandomOrgCache, for precaching requests. In the context of this module, a serialized client is one for which the sequence of requests matches the sequence of responses.
 
-Installation
-------------
+I have made changes that seem to work on my Python 3.8.3 install. I don't know if it will work in all cases, or if it will work for you. 
+
+Make sure you also have `requests <http://docs.python-requests.org/en/latest/>`_ lib installed.
+
+Installation of requests lib
+----------------------------
 
 To install, simply:
-
-.. code-block:: bash
-
-    $ pip install rdoclient
-
-Requires the `requests <http://docs.python-requests.org/en/latest/>`_ lib:
 
 .. code-block:: bash
 

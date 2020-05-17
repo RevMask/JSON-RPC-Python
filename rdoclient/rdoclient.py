@@ -21,6 +21,7 @@ RandomOrgInsufficientRequestsError -- requests allowance exceeded.
 
 RandomOrgInsufficientBitsError -- bits allowance exceeded.
 
+My changes seem to work for me, but I make no guarantees! (RevMask)
 """
 
 import json
@@ -30,7 +31,7 @@ import time
 import uuid
 
 from datetime import datetime
-from Queue import Queue, Empty
+from queue import Queue, Empty
 
 import requests
 
@@ -191,7 +192,7 @@ class RandomOrgCache(object):
                         result = self._process_function(response)
                         
                         # Split bulk response into result sets.
-                        for i in xrange(0, len(result), self._request_number):
+                        for i in range(0, len(result), self._request_number):
                             self._queue.put(result[i:i+self._request_number])
                         
                     except Exception as e:
@@ -1360,7 +1361,7 @@ class RandomOrgClient(object):
         http://docs.python-requests.org/en/v2.0-0/user/quickstart/#errors-and-exceptions
         """
         if self._requests_left is None or \
-           time.clock() > self._last_response_received_time + _ALLOWANCE_STATE_REFRESH_SECONDS:
+           time.process_time() > self._last_response_received_time + _ALLOWANCE_STATE_REFRESH_SECONDS:
             self._get_usage()
         
         return self._requests_left
@@ -1397,9 +1398,9 @@ class RandomOrgClient(object):
         http://docs.python-requests.org/en/v2.0-0/user/quickstart/#errors-and-exceptions
         """
         if self._bits_left is None or \
-           time.clock() > self._last_response_received_time + _ALLOWANCE_STATE_REFRESH_SECONDS:
+           time.process_time() > self._last_response_received_time + _ALLOWANCE_STATE_REFRESH_SECONDS:
             self._get_usage()
-        
+
         return self._bits_left
     
     
@@ -1486,7 +1487,7 @@ class RandomOrgClient(object):
         
         # Check server advisory delay.
         self._advisory_delay_lock.acquire()
-        wait = self._advisory_delay - (time.clock() - self._last_response_received_time)
+        wait = self._advisory_delay - (time.process_time() - self._last_response_received_time)
         self._advisory_delay_lock.release()
         
         # Wait the specified delay if necessary and if wait time is not
@@ -1549,12 +1550,13 @@ class RandomOrgClient(object):
         self._advisory_delay_lock.acquire()
         if 'advisoryDelay' in data['result']:
             # Convert millis to decimal seconds.
-            self._advisory_delay = long(data['result']['advisoryDelay']) / 1000.0
+            # self._advisory_delay = long(data['result']['advisoryDelay']) / 1000.0
+            self._advisory_delay = int(data['result']['advisoryDelay']) / 1000.0
         else:
             # Use default if none from server.
             self._advisory_delay = _DEFAULT_DELAY
         
-        self._last_response_received_time = time.clock()
+        self._last_response_received_time = time.process_time()
         
         self._advisory_delay_lock.release()
         
